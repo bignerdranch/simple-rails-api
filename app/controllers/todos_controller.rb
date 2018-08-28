@@ -1,52 +1,40 @@
 class TodosController < ApplicationController
   before_action :doorkeeper_authorize!, except: [:index, :show]
-  before_action :set_todo, only: [:show, :update, :destroy]
 
-  # GET /todos
   def index
-    @todos = Todo.all
-
-    render json: @todos
+    render json: Todo.all
   end
 
-  # GET /todos/1
   def show
-    render json: @todo
+    render json: Todo.find(params[:id])
   end
 
-  # POST /todos
   def create
-    @todo = Todo.new(todo_params)
-
-    if @todo.save
-      render json: @todo, status: :created, location: @todo
+    todo = Todo.new(todo_params)
+    if todo.save
+      render json: todo, status: :created
     else
-      render json: @todo.errors, status: :unprocessable_entity
+      render json: todo.errors, status: :unprocessable_entity
     end
   end
 
-  # PATCH/PUT /todos/1
   def update
-    if @todo.update(todo_params)
-      render json: @todo
+    todo = Todo.find(params[:id])
+    if todo.update(todo_params)
+      render json: todo
     else
-      render json: @todo.errors, status: :unprocessable_entity
+      render json: todo.errors, status: :unprocessable_entity
     end
   end
 
-  # DELETE /todos/1
   def destroy
-    @todo.destroy
+    todo = Todo.find(params[:id])
+    todo.destroy
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_todo
-      @todo = Todo.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def todo_params
-      params.require(:todo).permit(:title, :complete)
-    end
+  def todo_params
+    params.permit(:title, :complete)
+  end
 end
