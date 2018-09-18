@@ -20,6 +20,10 @@ class TodosController < ApplicationController
 
   def update
     todo = Todo.find(params[:id])
+    if todo.user != current_user
+      head :unauthorized
+      return
+    end
     if todo.update(todo_params)
       render json: todo
     else
@@ -29,6 +33,10 @@ class TodosController < ApplicationController
 
   def destroy
     todo = Todo.find(params[:id])
+    if todo.user != current_user
+      head :unauthorized
+      return
+    end
     todo.destroy
   end
 
