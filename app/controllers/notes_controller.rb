@@ -2,15 +2,15 @@ class NotesController < ApplicationController
   # before_action :doorkeeper_authorize!, except: [:index, :show]
 
   def index
-    render json: todo.notes
+    render json: notes
   end
 
   def show
-    render json: todo.notes.find(params[:id])
+    render json: notes.find(params[:id])
   end
 
   def create
-    note = todo.notes.create(note_params)
+    note = notes.create(note_params)
     if note.save
       render json: note, status: :created
     else
@@ -19,7 +19,7 @@ class NotesController < ApplicationController
   end
 
   def update
-    note = todo.notes.find(params[:id])
+    note = notes.find(params[:id])
     if note.update_attributes(note_params)
       render json: note
     else
@@ -28,7 +28,7 @@ class NotesController < ApplicationController
   end
 
   def destroy
-    note = todo.notes.find(params[:id])
+    note = notes.find(params[:id])
     note.destroy
   end
 
@@ -36,6 +36,10 @@ class NotesController < ApplicationController
 
   def todo
     Todo.find(params[:todo_id])
+  end
+
+  def notes
+    todo.notes
   end
 
   def note_params
