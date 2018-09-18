@@ -39,7 +39,11 @@ class NotesController < ApplicationController
   end
 
   def notes
-    todo.notes
+    if todo.user == current_user
+      todo.notes
+    else
+      []
+    end
   end
 
   def note_params
