@@ -15,4 +15,15 @@ RSpec.describe 'todos', type: :request do
     expect(response_todos.length).to eq(2)
     expect(response_todos.first['title']).to eq('Todo 1')
   end
+
+  describe 'creating todos' do
+    it 'fails without authentication' do
+      body = { title: 'New Todo' }
+
+      post '/todos', params: body
+
+      expect(response.status).to eq(401)
+      expect(Todo.count).to eq(0)
+    end
+  end
 end
