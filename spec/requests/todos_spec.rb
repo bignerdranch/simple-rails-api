@@ -39,5 +39,21 @@ RSpec.describe 'todos', type: :request do
       expect(Todo.count).to eq(1)
       expect(Todo.first.title).to eq('New Todo')
     end
+
+    it 'validates required fields' do
+      user = User.create!(email: 'example@example.com', password: 'password')
+      token = Doorkeeper::AccessToken.create!(resource_owner_id: user.id)
+
+      headers = { 'Authorization' => "Bearer #{token.token}" }
+      body = { title: '' }
+
+      post '/todos', params: body, headers: headers
+
+      expect(response.status).to eq(422)
+
+      response_errors = JSON.parse(response.body)
+
+      expect(response_errors['title']).to eq(["can't be blank"])
+    end
   end
 end
