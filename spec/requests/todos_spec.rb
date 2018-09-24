@@ -25,5 +25,19 @@ RSpec.describe 'todos', type: :request do
       expect(response.status).to eq(401)
       expect(Todo.count).to eq(0)
     end
+
+    it 'creates a todo with authentication' do
+      user = User.create!(email: 'example@example.com', password: 'password')
+      token = Doorkeeper::AccessToken.create!(resource_owner_id: user.id)
+
+      headers = { 'Authorization' => "Bearer #{token.token}" }
+      body = { title: 'New Todo' }
+
+      post '/todos', params: body, headers: headers
+
+      expect(response.status).to eq(201)
+      expect(Todo.count).to eq(1)
+      expect(Todo.first.title).to eq('New Todo')
+    end
   end
 end
